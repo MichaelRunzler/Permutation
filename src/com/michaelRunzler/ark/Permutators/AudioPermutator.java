@@ -4,12 +4,8 @@ import com.michaelRunzler.ark.Permutator;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 public class AudioPermutator extends Permutator
 {
@@ -33,6 +29,12 @@ public class AudioPermutator extends Permutator
         // Produce all permutations of the input set
         while(running)
         {
+            // Verify that all target files are valid and readable
+            for(String s : inputs){
+                File f = new File(s);
+                if(!f.exists() || !f.canRead()) throw new IOException("Could not read from file " + f.getAbsolutePath());
+            }
+
             // Get a stream that refers to the merge executable within the JAR or classpath
             InputStream fs = this.getClass().getClassLoader().getResourceAsStream("mp3wrap.exe");
             if(fs == null) throw new IOException("Could not get path to internal MP3 manipulation executable.");
