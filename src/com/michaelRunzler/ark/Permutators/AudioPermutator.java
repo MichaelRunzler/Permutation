@@ -26,15 +26,22 @@ public class AudioPermutator extends Permutator
         int counter = 1;
         boolean running = true;
 
+        // Verify that all target files are valid and readable
+        boolean allValid = true;
+        for(String s : inputs){
+            File f = new File(s);
+            if(!f.exists() || !f.canRead()) {
+                System.out.println("ERROR: Could not read from file " + f.getAbsolutePath() + ". Please check the path and try again.");
+                allValid = false;
+            }
+        }
+
+        // If not all files are readable, throw an exception to signal to the main loop that something went wrong
+        if(!allValid) throw new IOException("Could not read from one or more files.");
+
         // Produce all permutations of the input set
         while(running)
         {
-            // Verify that all target files are valid and readable
-            for(String s : inputs){
-                File f = new File(s);
-                if(!f.exists() || !f.canRead()) throw new IOException("Could not read from file " + f.getAbsolutePath());
-            }
-
             // Get a stream that refers to the merge executable within the JAR or classpath
             InputStream fs = this.getClass().getClassLoader().getResourceAsStream("mp3wrap.exe");
             if(fs == null) throw new IOException("Could not get path to internal MP3 manipulation executable.");

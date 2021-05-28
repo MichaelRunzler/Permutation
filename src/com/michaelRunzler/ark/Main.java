@@ -8,8 +8,8 @@ import java.util.Scanner;
 
 public class Main
 {
-    public static final String version = "Permutator version 2.1.0-J by Logan Seidel and Ethan Scott." +
-            "\nLast updated 2021-05-24 at 22:07 PST, local revision 3b (efcf59c0)." +
+    public static final String version = "Permutator version 2.1.1-J by Ethan Scott." +
+            "\nLast updated 2021-05-27 at 23:01 PST, local revision 3c (da6d2f94)." +
             "\nPrivate use permitted under license, or under the terms of the GNU General Public License (GPL)." +
             "\nCopyright (c) 2021-2022 ARK Software. All rights reserved.\n";
 
@@ -21,6 +21,14 @@ public class Main
         // Populate the registry
         PermutatorRegister.populateRegistry();
 
+        // Run the main loop
+        boolean isStillRunning = true;
+        while(isStillRunning)
+            isStillRunning = run();
+    }
+
+    private static boolean run()
+    {
         System.out.println("Please select an input type from the following list.");
 
         // List all possible permutators and map them to numeric selection numbers
@@ -66,7 +74,7 @@ public class Main
         // Exit if we got the exit option
         if(selection == selNum) {
             System.out.println("Exiting.");
-            System.exit(0);
+            return false;
         }
 
         // Now that we have a valid selection, get the target folder path
@@ -101,20 +109,28 @@ public class Main
             if(input.equals(done)) finished = true;
             else if(input.equals(quit)){
                 System.out.println("Quit command received, exiting.");
-                System.exit(0);
+                return false;
             }else cache.add(input);
         }
 
         // Pass the inputs to the permutator
         try {
             perm.permuteAll(cache.toArray(new String[0]), dest);
+            // Confirm completion
+            System.out.printf("Permutations written to \"%s\".\n\n", dest.getAbsolutePath());
         } catch (IOException e) {
             System.out.println("Encountered system I/O error while permuting:");
             e.printStackTrace();
-            System.exit(1);
+            System.out.println();
         }
 
-        // Confirm completion
-        System.out.printf("Permutations written to \"%s\", exiting.\n", dest.getAbsolutePath());
+        // Wait a second for the error message (if any) to be read, then return to the main menu
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Returning to main menu...\n");
+        return true;
     }
 }
