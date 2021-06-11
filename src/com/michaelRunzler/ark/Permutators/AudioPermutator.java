@@ -57,12 +57,9 @@ public class AudioPermutator extends Permutator
                     + " already exists and could not be deleted.");
 
             // Construct argument string for the executable
-            String args = String.format("%s %s %s", mergeExecExtPath, dst.getAbsolutePath(), concat(inputs));
+            String args = String.format("\"%s\" \"%s\" %s", mergeExecExtPath, dst.getAbsolutePath(), concat(inputs));
 
             System.out.printf("Processing permutation %d...", counter);
-
-            // TODO debug
-            System.out.println("DEBUG/ARGS: \"" + args + "\"");
 
             // Run the executable with the arguments and wait for it to terminate
             Process extProcess = Runtime.getRuntime().exec(args);

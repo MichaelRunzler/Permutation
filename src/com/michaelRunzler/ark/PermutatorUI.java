@@ -20,8 +20,8 @@ import java.util.HashMap;
 
 public class PermutatorUI extends ARKManagerBase
 {
-    public static final String version = "Permutator version 2.2.2-GUI by Ethan Scott." +
-            "\nLast updated 2021-06-10 at 16:08 PST, local revision 4f (ba643a80)." +
+    public static final String version = "Permutator version 2.2.3-GUI by Ethan Scott." +
+            "\nLast updated 2021-06-10 at 23:14 PST, local revision 4g (ba643a80)." +
             "\nPrivate use permitted under license, or under the terms of the GNU General Public License (GPL)." +
             "\nCopyright (c) 2021-2022 ARK Software. All rights reserved.\n";
 
