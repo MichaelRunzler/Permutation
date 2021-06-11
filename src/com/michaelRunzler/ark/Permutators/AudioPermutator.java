@@ -61,6 +61,9 @@ public class AudioPermutator extends Permutator
 
             System.out.printf("Processing permutation %d...", counter);
 
+            // TODO debug
+            System.out.println("DEBUG/ARGS: \"" + args + "\"");
+
             // Run the executable with the arguments and wait for it to terminate
             Process extProcess = Runtime.getRuntime().exec(args);
             try {
