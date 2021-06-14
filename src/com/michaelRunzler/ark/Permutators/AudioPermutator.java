@@ -6,6 +6,11 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class AudioPermutator extends Permutator
 {
@@ -39,25 +44,40 @@ public class AudioPermutator extends Permutator
         // If not all files are readable, throw an exception to signal to the main loop that something went wrong
         if(!allValid) throw new IOException("Could not read from one or more files.");
 
+        // If the executable hasn't already been extracted:
+        String mergeExecExtPath = System.getProperty("java.io.tmpdir") + "sox" + File.separator + "sox.exe";
+        if(!new File(mergeExecExtPath).exists())
+        {
+            // Get the local file inventory as a list
+            InputStream inv = this.getClass().getClassLoader().getResourceAsStream("file-list.txt");
+            if (inv == null) throw new IOException("Could not get path to resource index file.");
+            File invExtPath = new File(System.getProperty("java.io.tmpdir") + File.separator + inv);
+            FileUtils.copyInputStreamToFile(inv, invExtPath);
+            List<String> fileList = Files.readAllLines(Paths.get(invExtPath.toURI()));
+
+            // For each file in the inventory:
+            for (String file : fileList) {
+                // Get a stream that refers to the file within the JAR or classpath
+                InputStream fs = this.getClass().getClassLoader().getResourceAsStream(file);
+                if (fs == null) throw new IOException("Could not get path to internal resource file: " + file);
+
+                // Extract to the temporary folder
+                File fileExtPath = new File(System.getProperty("java.io.tmpdir") + File.separator + "sox" + File.separator + file);
+                FileUtils.copyInputStreamToFile(fs, fileExtPath);
+            }
+        }
+
         // Produce all permutations of the input set
         while(running)
         {
-            // Get a stream that refers to the merge executable within the JAR or classpath
-            InputStream fs = this.getClass().getClassLoader().getResourceAsStream("mp3wrap.exe");
-            if(fs == null) throw new IOException("Could not get path to internal MP3 manipulation executable.");
-            String dstFileNameNoExt = String.format("permutations-Audio-%d", counter);
-
-            // Extract merge executable to the temporary folder and get new path
-            File mergeExecExtPath = new File(System.getProperty("java.io.tmpdir") + File.separator + "mp3wrap.exe");
-            FileUtils.copyInputStreamToFile(fs, mergeExecExtPath);
-
             // Construct the destination path object and ensure that it doesn't already exist
+            String dstFileNameNoExt = String.format("permutations-Audio-%d", counter);
             File dst = new File(targetFolder, dstFileNameNoExt + ".mp3");
             if(dst.exists() && !dst.delete()) throw new IOException("Destination file " + dst.getAbsolutePath()
                     + " already exists and could not be deleted.");
 
             // Construct argument string for the executable
-            String args = String.format("\"%s\" \"%s\" %s", mergeExecExtPath, dst.getAbsolutePath(), concat(inputs));
+            String args = String.format("\"%s\" %s \"%s\"", mergeExecExtPath, concat(inputs), dst.getAbsolutePath());
 
             System.out.printf("Processing permutation %d...", counter);
 
@@ -67,12 +87,6 @@ public class AudioPermutator extends Permutator
                 int result = extProcess.waitFor();
                 if(result != 0) throw new IOException("MP3 manipulation sub-process terminated with nonzero exit code " + result);
             } catch (InterruptedException ignored) {}
-
-            // Change the output filename to remove the auto-added "_MP3WRAP" extension
-            File dst_tmp = new File(targetFolder, dstFileNameNoExt + "_MP3WRAP.mp3");
-            if(!dst_tmp.renameTo(dst))
-                throw new IOException("Could not complete file rename operation on file " + dst_tmp.getAbsolutePath());
-
             System.out.println("done.");
 
             // Iterate to the next permutation

@@ -20,8 +20,8 @@ import java.util.HashMap;
 
 public class PermutatorUI extends ARKManagerBase
 {
-    public static final String version = "Permutator version 2.2.3-GUI by Ethan Scott." +
-            "\nLast updated 2021-06-10 at 23:14 PST, local revision 4g (ba643a80)." +
+    public static final String version = "Permutator version 2.3.1-GUI by Ethan Scott." +
+            "\nLast updated 2021-06-14 at 01:43 PST, local revision 5c (8a4452bb)." +
             "\nPrivate use permitted under license, or under the terms of the GNU General Public License (GPL)." +
             "\nCopyright (c) 2021-2022 ARK Software. All rights reserved.\n";
 
@@ -35,6 +35,7 @@ public class PermutatorUI extends ARKManagerBase
     private HBox mainButtons;
     private Button process;
     private Button clear;
+    private Button remove;
     private ProgressIndicator loading;
     private Button info;
 
@@ -73,7 +74,8 @@ public class PermutatorUI extends ARKManagerBase
         // Set up file choice dialogs for later
         FileChooser fc = new FileChooser();
         fc.setInitialDirectory(new File(System.getProperty("user.home")));
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files (.mp3)", "*.mp3"));
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files",
+                "*.mp3", "*.wav", "*.flac", "*.sox", "*.ogg", "*.aiff", "*.snd", "*.vorbis"));
         fc.setTitle("Select a file");
 
         DirectoryChooser dc = new DirectoryChooser();
@@ -84,8 +86,9 @@ public class PermutatorUI extends ARKManagerBase
         items = new ListView<>();
         process = new Button("Process");
         clear = new Button("Clear List");
+        remove = new Button("Remove");
         loading = new ProgressIndicator();
-        mainButtons = new HBox(clear, process, loading);
+        mainButtons = new HBox(remove, clear, process, loading);
         info = new Button("Program Info...");
 
         // Grab permutators and generate tabs for each
@@ -178,6 +181,7 @@ public class PermutatorUI extends ARKManagerBase
         // Set tooltips for non-tab elements
         process.setTooltip(new Tooltip("Permute all items currently in the list"));
         clear.setTooltip(new Tooltip("Clear all items in the list. This cannot be undone!"));
+        remove.setTooltip(new Tooltip("Remove the selected item from the list"));
         info.setTooltip(new Tooltip("Show program version and copyright information"));
         selectOutputPath.setTooltip(new Tooltip("Set where the permuted output files will go"));
         selectFile.setTooltip(new Tooltip("Choose an input file"));
@@ -238,6 +242,11 @@ public class PermutatorUI extends ARKManagerBase
             // Confirm first
             if(new ARKInterfaceDialogYN("Warning", "This will clear all list items. Are you sure?", "Yes", "No").display())
                 items.getItems().clear();
+        });
+
+        remove.setOnAction(e -> {
+            int idx = items.getSelectionModel().getSelectedIndex();
+            if(idx >= 0) items.getItems().remove(idx);
         });
 
         process.setOnAction(e ->
