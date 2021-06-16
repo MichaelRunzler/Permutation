@@ -33,6 +33,10 @@ public abstract class Permutator
 
     /**
      * Gets the next permutation of the provided array.
+     * WARNING: If the input array is NOT in lexicographical order, the permutation algorithm will likely miss some
+     * permutations due to the fact that it stops when the array is in reverse order. If the array is provided in
+     * reverse order to start with, only ONE permutation will be produced. Arrays should be prepared with
+     * {@link java.util.Arrays#sort(Object[])})} before starting permutation.
      * This method assumes that {@param s} is mutable; that is, it does not create a shallow copy before mutating it.
      * Repeatedly calling this method on the same array will only produce successive permutations if {@param s} is fully
      * mutable (that is, not a shallow copy or redirectable symbolic reference).

@@ -6,6 +6,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class CharPermutator extends Permutator
 {
@@ -36,6 +37,9 @@ public class CharPermutator extends Permutator
 
             output.createNewFile();
             fos = new BufferedOutputStream(new FileOutputStream(output));
+
+            // Sort the incoming array before permuting
+            Arrays.sort(inputs);
 
             String[] str = toStringArray(s.toCharArray());
             // Write each permutation to the destination file, terminated by a newline

@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 public class AudioPermutator extends Permutator
@@ -66,6 +67,9 @@ public class AudioPermutator extends Permutator
                 FileUtils.copyInputStreamToFile(fs, fileExtPath);
             }
         }
+
+        // Sort the incoming array before permuting
+        Arrays.sort(inputs);
 
         // Produce all permutations of the input set
         while(running)
