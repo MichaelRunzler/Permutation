@@ -38,10 +38,11 @@ public class CharPermutator extends Permutator
             output.createNewFile();
             fos = new BufferedOutputStream(new FileOutputStream(output));
 
-            // Sort the incoming array before permuting
-            Arrays.sort(inputs);
-
             String[] str = toStringArray(s.toCharArray());
+
+            // Sort the incoming array before permuting
+            Arrays.sort(str);
+
             // Write each permutation to the destination file, terminated by a newline
             boolean running = true;
             while(running) {

@@ -8,8 +8,8 @@ import java.util.Scanner;
 
 public class Main
 {
-    public static final String version = "Permutator version 2.1.1-J by Ethan Scott." +
-            "\nLast updated 2021-05-27 at 23:01 PST, local revision 3c (da6d2f94)." +
+    public static final String version = "Permutator version 2.1.2-J by Ethan Scott." +
+            "\nLast updated 2021-06-07 at 22:54 PST, local revision 3d (da6d2f94)." +
             "\nPrivate use permitted under license, or under the terms of the GNU General Public License (GPL)." +
             "\nCopyright (c) 2021-2022 ARK Software. All rights reserved.\n";
 
